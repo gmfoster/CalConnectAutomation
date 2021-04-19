@@ -127,6 +127,10 @@ class BulkUpdater:
         # Action is required to simulate mouse hover
         action = ActionChains(self.driver)
 
+        # This is our current window, click back to it
+        currentWindow = self.driver.current_window_handle
+        self.driver.switch_to.window(currentWindow)
+
         # Load List
         # This is a list that must be created of all the incident ids you want to update. Currently,
         # the target column to be updated is the 3rd column.
@@ -154,6 +158,7 @@ class BulkUpdater:
         inline_edit = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/force-list-view-manager-button-bar/div/div[2]/lightning-button-icon/button")
         # Iterate through table rows, starting at 1, 0 is an empty row?
         for i in range(1, len(table_rows)+1):
+            self.driver.switch_to.window(currentWindow)
             print("Iterating row: ", i)
 
             # 3rd cell element (column)
@@ -166,15 +171,19 @@ class BulkUpdater:
             dropdown_menu = xpath + "/div"
 
             # Locate target elements
+            self.driver.switch_to.window(currentWindow)
             pStatus = self.driver.find_element_by_xpath(xpath)
 
             # Simulate hovering mouse over pStatus cell, and click on edit button
             #hover = ActionChains(self.driver).move_to_element(pStatus).pause(1).move_to_element(self.driver.find_element_by_xpath(button)).click()
             #hover.perform()
 
+            self.driver.switch_to.window(currentWindow)
             pStatus.click()
+            self.driver.switch_to.window(currentWindow)
             pStatus.click()
             print("Cell Click")
+            self.driver.switch_to.window(currentWindow)
             inline_edit.click()
             print("Edit click, waiting for menu to load")
             while True:
@@ -188,6 +197,7 @@ class BulkUpdater:
 
             print("Menu loaded, opening")
             # Simulate menu open
+            self.driver.switch_to.window(currentWindow)
             menu = self.driver.find_element_by_xpath(dropdown_menu)
             menu.click()
 
@@ -204,6 +214,7 @@ class BulkUpdater:
             # Locate and select "Closed by LHJ option"
             # IF YOU WANT TO EDIT A DIFFERENT FIELD THIS XPATH WILL MOST LIKELY NEED TO BE UPDATED #
             print("Changing selected variable")
+            self.driver.switch_to.window(currentWindow)
             closed_by_lhj = self.driver.find_element_by_xpath("/html/body/div[8]/div/ul/li[8]")
             closed_by_lhj.click()
 
