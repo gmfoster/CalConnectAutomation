@@ -30,6 +30,8 @@ class BulkUpdater:
         self.options.headless = False  # headless = True hides the chrome browser running in the background, set this to
                                        # false if you want to watch the script step through the website
         self.options.add_argument("--disable-notifications")    # disables annoying allow notifications pop up that messes stuff up
+        self.options.add_argument("disable-popup-blocking")
+        self.options.add_argument("test-type")
 
         # Initialize webdriver
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=self.options)
@@ -128,6 +130,7 @@ class BulkUpdater:
         action = ActionChains(self.driver)
 
         # This is our current window, click back to it
+        time.sleep(30)
         currentWindow = self.driver.current_window_handle
         self.driver.switch_to.window(currentWindow)
 
@@ -157,7 +160,8 @@ class BulkUpdater:
         table_rows = table.find_elements(By.TAG_NAME, "tr")
         inline_edit = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/force-list-view-manager-button-bar/div/div[2]/lightning-button-icon/button")
         # Iterate through table rows, starting at 1, 0 is an empty row?
-        for i in range(1, len(table_rows)+1):
+        for i in range(1, len(table_rows)):
+            time.sleep(.5)
             self.driver.switch_to.window(currentWindow)
             print("Iterating row: ", i)
 
