@@ -32,6 +32,7 @@ class BulkUpdater:
         self.options.add_argument("--disable-notifications")    # disables annoying allow notifications pop up that messes stuff up
         self.options.add_argument("disable-popup-blocking")
         self.options.add_argument("test-type")
+        self.options.add_argument("--use-fake-ui-for-media-stream")
 
         # Initialize webdriver
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=self.options)
