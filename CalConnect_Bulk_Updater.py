@@ -135,13 +135,13 @@ class BulkUpdater:
         # Wait for page to load
         while True:
             try:
-                WebDriverWait(self.driver, 50).until(
+                WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located((By.XPATH, "//*[@id='brandBand_1']/div/div/div/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/div/table")))
-                WebDriverWait(self.driver, 50).until(
+                WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located((By.XPATH, "//*[@id='brandBand_1']/div/div/div/div/div[2]/div/div[1]/div[2]/div[2]/div[1]/div/div/table/tbody")))
-                WebDriverWait(self.driver, 50).until(
+                WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located((By.TAG_NAME, "tr")))
-                WebDriverWait(self.driver, 50).until(
+                WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located((By.TAG_NAME, "td")))
                 break
             except TimeoutException:
@@ -177,7 +177,7 @@ class BulkUpdater:
             print("Edit click, waiting for menu to load")
             while True:
                 try:
-                    WebDriverWait(self.driver, 50).until(
+                    WebDriverWait(self.driver, 5).until(
                         EC.presence_of_element_located((By.XPATH, dropdown_menu)))
                     break
                 except TimeoutException:
@@ -193,7 +193,7 @@ class BulkUpdater:
             # Wait for menu elements to load
             while True:
                 try:
-                    WebDriverWait(self.driver, 50).until(
+                    WebDriverWait(self.driver, 5).until(
                         EC.presence_of_element_located((By.XPATH, "/html/body/div[9]/div/ul/li[8]")))
                     break
                 except TimeoutException:

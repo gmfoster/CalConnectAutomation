@@ -14,7 +14,9 @@
    
 Note. if installing the requirements isn't working, try manually installing by navigating to File->Settings->Project: Project Name->Python Interpreter-> Click the (+) to install -> search: webdriver-manager -> install the package that matches the name exactly. Do the same thing with the other packages in requirements.txt.
 
-4. Create a new python file in the same directory as the CalConnect_Bulk_Updater Script. In this file paste:
+4. Create a new python file in the same directory as the CalConnect_Bulk_Updater Script.
+   It will ask if you want to add this file to git. Click Cancel (don't add to git, this is your credentials file you don't want to push this to github)   
+   In Credentials.py paste and replace the username, password, and url with corresponding values:
 
          login = {
           'username': 'YOUR_USERNAME',
