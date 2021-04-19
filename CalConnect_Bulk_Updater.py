@@ -130,7 +130,7 @@ class BulkUpdater:
         action = ActionChains(self.driver)
 
         # This is our current window, click back to it
-        time.sleep(30)
+
         currentWindow = self.driver.current_window_handle
         self.driver.switch_to.window(currentWindow)
 
@@ -138,7 +138,7 @@ class BulkUpdater:
         # This is a list that must be created of all the incident ids you want to update. Currently,
         # the target column to be updated is the 3rd column.
         self.driver.get(self.list_url)
-
+        time.sleep(30)
         # Wait for page to load
         while True:
             try:
