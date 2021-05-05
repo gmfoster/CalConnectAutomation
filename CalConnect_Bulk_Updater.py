@@ -15,6 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import Credentials
+import pandas as pd
 
 
 class BulkUpdater:
@@ -24,6 +25,7 @@ class BulkUpdater:
         self.username = Credentials.login['username']
         self.password = Credentials.login['password']
         self.list_url = Credentials.login['list_url']
+        self.records_to_update = Credentials.login['id_file']
 
         # Initialize Options
         self.options = Options()
@@ -127,19 +129,101 @@ class BulkUpdater:
         It will then iterate through that list, change Process Status + to "Closed by LHJ", and save
         :return:
         """
-        # Action is required to simulate mouse hover
-        action = ActionChains(self.driver)
-
-        # This is our current window, click back to it
-
-        currentWindow = self.driver.current_window_handle
-        self.driver.switch_to.window(currentWindow)
-
         # Load List
         # This is a list that must be created of all the incident ids you want to update. Currently,
         # the target column to be updated is the 3rd column.
         self.driver.get(self.list_url)
-        time.sleep(30)
+
+
+    def update_list(self, records):
+        """
+        The list will have been loaded prior to calling this function. This function will edit the list of IncidentIds to be changed, in order to facilitate bulk editing
+        :param records: string, incident id comma separated
+        :return:
+        """
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/div[1]")))
+                WebDriverWait(self.driver, 50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/div[1]/div/button")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+
+        dropdown = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/div[1]")
+        dropdown.click()
+
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/div[1]/div/div/ul/li[6]")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+        edit_list_filters = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[1]/div[2]/div[3]/div[1]/div/div/ul/li[6]")
+        edit_list_filters.click()
+
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/div[1]/ol[2]/li[1]/div")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+        id_list = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/div[1]/ol[2]/li[1]/div")
+        id_list.click()
+
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[2]/div/div[1]/div[1]/div/div/div[2]/div/div/input")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+        input_field = self.driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div[1]/div[1]/div/div/div[2]/div/div/input")
+        input_field.click()
+        input_field.clear()
+        input_field.send_keys(records)
+
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[2]/div/div[1]/div[1]/div/button")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+        done_button = self.driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div[1]/div[1]/div/button")
+        done_button.click()
+
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[1]/div[2]/div/button")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+        save_button = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[1]/div[2]/div/button")
+        save_button.click()
+
+        while True:
+            try:
+                WebDriverWait(self.driver,50).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[1]/button")))
+                break
+            except TimeoutException:
+                print("Timeout Exception: Page elements took too long to load")
+        x_button = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[1]/button")
+        x_button.click()
+
+
+    def execute(self):
+        # Action is required to simulate mouse hover
+        # action = ActionChains(self.driver)
+
+        # This is our current window, click back to it
+        currentWindow = self.driver.current_window_handle
+        self.driver.switch_to.window(currentWindow)
         # Wait for page to load
         while True:
             try:
@@ -211,7 +295,7 @@ class BulkUpdater:
             while True:
                 try:
                     WebDriverWait(self.driver, 50).until(
-                        EC.presence_of_element_located((By.XPATH, "/html/body/div[8]")))
+                        EC.presence_of_element_located((By.XPATH, "/html/body/div[8]/div/ul/li[8]")))
                     break
                 except TimeoutException:
                     print("Timeout Exception: Page elements took too long to load")
@@ -219,15 +303,15 @@ class BulkUpdater:
             # Locate and select "Closed by LHJ option"
             # IF YOU WANT TO EDIT A DIFFERENT FIELD THIS XPATH WILL MOST LIKELY NEED TO BE UPDATED #
             print("Changing selected variable")
-            self.driver.switch_to.window(currentWindow)
-            closed_by_lhj = self.driver.find_element_by_xpath("/html/body/div[8]/div/ul/li[8]")
+            closed_by_lhj = self.driver.find_element_by_xpath('//*[@title="Closed by LHD"]')
+            #closed_by_lhj = self.driver.find_element_by_xpath("/html/body/div[8]/div/ul/li[8]/a")
             closed_by_lhj.click()
 
-        # DONT UNCOMMENT THIS UNTIL YOU HAVE RAN IT ONCE AND KNOW IT IS CHANGING THE FIELD YOU WANT TO WHAT YOU WANT IT TO
+        # DONT UNCOMMENT THIS UNTIL YOU HAVE RUN IT ONCE AND KNOW IT IS CHANGING THE FIELD YOU WANT TO
         # Locate and click save
         print("Saving")
-        #save_button = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div/button[2]")
-        #save_button.click()
+        save_button = self.driver.find_element_by_xpath("/html/body/div[4]/div[1]/section/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div/button[2]")
+        save_button.click()
 
 
     def close(self):
@@ -244,6 +328,30 @@ if __name__ == "__main__":
     d.login()   # login to calconnect
     d.consent()     # consent to terms
     d.production()  # load production environment
-    d.load_list()   # load list of incident id's to change and change them!
-    time.sleep(50)   # sleep to allow time to save
+    d.load_list()   # load list of incident id's
+
+    # This number may be different depending on your connection. It is attempting to wait until the annoying CC pop-up box comes up
+    time.sleep(6)
+    c = 1
+    t = pd.read_csv(d.records_to_update)
+    ids = t.loc[:, "IncidentID"]
+    string_ids = [str(element) for element in ids]
+    n = 24
+    chunk_list = [string_ids[i * n:(i + 1) * n] for i in range((len(string_ids) + n - 1) // n)]
+    chunk_strings = []
+    for chunk in chunk_list:
+        chunk_strings.append(",".join(chunk))
+    # Chunk strings is now an array of comma separated strings of length 24
+
+    for id_list in chunk_strings:
+        c = c + 24
+        print(c)
+        d.update_list(id_list)
+        time.sleep(3)
+        d.execute()
+        # Sleep to allow time for save
+        time.sleep(15)
+        d.load_list()
+        time.sleep(3)
+
     d.close()       # close chrome
